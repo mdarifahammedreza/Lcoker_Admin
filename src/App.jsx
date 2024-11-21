@@ -1,8 +1,8 @@
 import './App.css';
 import { useState, useEffect } from 'react';
 
-const uri = "http://localhost:3000/api/student/booked-key";
-const registerUri = "http://localhost:3000/api/student/register";
+const uri = "https://lms-api-q3ec.onrender.com/api/student/booked-key";
+const registerUri = "https://lms-api-q3ec.onrender.com/api/student/register";
 
 // KeyInfoBox Component for displaying individual counts
 const KeyInfoBox = ({ title, count, colSpan = 1 }) => (
@@ -27,7 +27,7 @@ function App() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/student/stack');
+        const response = await fetch('https://lms-api-q3ec.onrender.com/api/student/stack');
         if (!response.ok) throw new Error('Network response was not ok');
         const data = await response.json();
         setData(data);
