@@ -4,6 +4,7 @@ import QRCodeScanner from './QRScanner';
 import { getkeys } from './handle';
 const uri = "https://locker-785y.onrender.com/api/student/booked-key";
 const registerUri = "https://locker-785y.onrender.com/api/student/register";
+const keyuri = "https://locker-785y.onrender.com/api/Locker/key";
 
 // KeyInfoBox Component for displaying individual counts
 const KeyInfoBox = ({ title, count, colSpan = 1 }) => (
@@ -23,7 +24,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeForm, setActiveForm] = useState('register'); // State to handle form toggle
-
+  const [kkey, settkey] = useState('');
   // Fetch student data
   useEffect(() => {
     const fetchData = async () => {
@@ -121,6 +122,30 @@ function App() {
       setStudentId('');
     }
   };
+  
+  const handlekeySubmit = async (e) => {
+    e.preventDefault();
+    setMessage(''); // Clear previous message
+
+    try {
+      const response = await fetch(keyuri, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data: kkey })
+      });
+      const result = await response.json();
+
+      if (response.ok) {
+        setMessage(`Success: ${result.message}`);
+      } else {
+        setMessage(`Error: ${result.message || 'Unable to book key'}`);
+      }
+    } catch (error) {
+      setMessage(`Error: ${error.message}`);
+    } finally {
+      settkey(''); // Clear input field
+    }
+  }
 
   return (
     <div className="bg-gray-50 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 h-screen p-6">
@@ -195,11 +220,27 @@ function App() {
 
         {/* Form for Finding a Student (could be a search feature) */}
         {activeForm === 'find' && (
-          <div className="bg-white p-6 rounded-lg col-span-2">
-            <p className="font-serif text-sm text-gray-600 mb-2">Find a Student (Search functionality)</p>
-            {/* Placeholder for Find Student form */}
-          </div>
-        )}
+         <div className="bg-white p-6 rounded-lg col-span-2">
+         <form onSubmit={handlekeySubmit}>
+           <p className="font-serif text-sm text-gray-600 mb-2">Enter new Key</p>
+           <input
+             type="text"
+             className="p-3 rounded-md w-full mb-4 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+             value={kkey}
+             onChange={(e) => settkey(e.target.value)}
+             placeholder="Enter key number"
+             required
+           />
+           <button
+             type="submit"
+             className="p-3 bg-gray-800 text-white rounded-md cursor-pointer w-full font-bold hover:bg-gray-700 transition duration-200"
+           >
+             Entry key
+           </button>
+         </form>
+         {message && <p className="mt-4 text-gray-700 font-medium">{message}</p>}
+       </div>
+     )}
 
         {/* Form to Add New Key */}
         {activeForm === 'key' && (
