@@ -45,7 +45,7 @@ function App() {
   // If loading or error occurs
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
-
+// Compare this snippet from Lcoker_Admin/src/App.jsx:
   // Count based on conditions
   const availableKeys = data.filter(student => student.keyStatus === 'Available').length;
   const takenKeys = data.filter(student => student.keyStatus === 'Taken').length;
