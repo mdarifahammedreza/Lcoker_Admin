@@ -1,8 +1,9 @@
 import './App.css';
 import { useState, useEffect } from 'react';
-
-const uri = "https://lms-api-q3ec.onrender.com/api/student/booked-key";
-const registerUri = "https://lms-api-q3ec.onrender.com/api/student/register";
+import QRCodeScanner from './QRScanner';
+import { getkeys } from './handle';
+const uri = "https://locker-785y.onrender.com/api/student/booked-key";
+const registerUri = "https://locker-785y.onrender.com/api/student/register";
 
 // KeyInfoBox Component for displaying individual counts
 const KeyInfoBox = ({ title, count, colSpan = 1 }) => (
@@ -27,7 +28,7 @@ function App() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('https://lms-api-q3ec.onrender.com/api/student/stack');
+        const response = await fetch('https://locker-785y.onrender.com/api/student/stack');
         if (!response.ok) throw new Error('Network response was not ok');
         const data = await response.json();
         setData(data);
@@ -66,7 +67,7 @@ function App() {
       if (response.ok) {
         setMessage(`Success: ${result.message}`);
         if (result.code === "Camera activated") {
-          const userInput = prompt("Please enter key number");
+          const userInput = getkeys();
           if (userInput) {
             const keyResponse = await fetch(uri, {
               method: 'POST',
@@ -128,7 +129,7 @@ function App() {
       <KeyInfoBox title="Taken Keys" count={takenKeys} colSpan={2} />
       <KeyInfoBox title="Issued Warnings" count={totalWarnings} />
       <KeyInfoBox title="Banned Students" count={bannedStudents} />
-
+      <QRCodeScanner />
       {/* Toggle Button for Forms */}
       <div className="col-span-4 bg-white p-6 rounded-lg shadow-md mb-6">
         <div className="flex space-x-4">

@@ -17,7 +17,7 @@ const Student = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('http://localhost:3000/api/student/stack');
+                const response = await fetch('https://locker-785y.onrender.com/api/student/stack');
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
