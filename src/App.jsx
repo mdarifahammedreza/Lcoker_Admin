@@ -1,11 +1,15 @@
 import { useEffect, useState } from 'react';
 import './App.css';
+import KeyManagement from './handle';
+const base_uri = "https://locker-backend-swart.vercel.app/";
 
-const uri = "http://localhost:3000/api/student/stack";
-const registerUri = "http://localhost:3000/api/student/register";
-const findUri = "http://localhost:3000/api/student/find";
-const addKeyUri = "http://localhost:3000/api/student/add-key";
-const logUri = "http://localhost:3000/api/student/logs";
+// Use the base URL to build complete endpoint URLs
+const uri = `${base_uri}api/student/stack`;
+const registerUri = `${base_uri}api/student/register`;
+const findUri = `${base_uri}api/student/info`;
+const addKeyUri = `${base_uri}api/key/add`;
+const logUri = `${base_uri}api/student/logs`;
+
 
 const KeyInfoBox = ({ title, count, colSpan = 1 }) => (
   <div className={`bg-gray-800 p-4 shadow-lg rounded-lg border border-gray-700 ${colSpan === 2 ? 'col-span-2' : 'col-span-1'}`}>
@@ -16,15 +20,15 @@ const KeyInfoBox = ({ title, count, colSpan = 1 }) => (
 
 const TerminalLog = ({ logs }) => (
   <div className='w-full h-full'>
-    
+
     <div className="bg-black text-green-400 p-4 rounded-lg font-mono h-64 overflow-auto border border-gray-700 shadow-lg relative">
-    <h2 className="text-xl bg-gray-950 px-1 py-1 font-semibold text-cyan-500 sticky top-0 left-0">Terminal- Vendor Log</h2>
-    <div className="h-full w-full p-2">
-      {logs.length > 0 ? logs.map((log, index) => (
-        <p key={index} className="whitespace-pre">{`> ${log.timestamp} - ${log.message}`}</p>
-      )) : <p>> No logs available...</p>}
+      <h2 className="text-xl bg-gray-950 px-1 py-1 font-semibold text-cyan-500 sticky top-0 left-0">Terminal- Vendor Log</h2>
+      <div className="h-full w-full p-2">
+        {logs.length > 0 ? logs.map((log, index) => (
+          <p key={index} className="whitespace-pre">{`> ${log.timestamp} - ${log.message}`}</p>
+        )) : <p>:-- No logs available...</p>}
+      </div>
     </div>
-  </div>
   </div>
 );
 
@@ -45,12 +49,12 @@ function App() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/student/stack');
+        const response = await fetch('https://locker-backend-swart.vercel.app/api/student/stack');
         if (!response.ok) throw new Error('Network response was not ok');
         const data = await response.json();
         setData(data);
       } catch (error) {
-        setError(error.message);
+        // setError(error.message);
       } finally {
         setLoading(false);
       }
@@ -81,55 +85,162 @@ function App() {
       </div>
 
       <div className='flex gap-6'>
-      <div className="mt-8 p-6 bg-gray-800 rounded-lg shadow-md w-1/2">
-        <div className="flex justify-center space-x-4 mb-6">
-          {['register', 'find', 'key'].map(type => (
-            <button
-              key={type}
-              onClick={() => setActiveForm(type)}
-              className={`py-2 px-4 rounded-lg font-semibold transition duration-200 ${activeForm === type ? 'bg-blue-600 text-cyan-500' : 'bg-gray-700 text-gray-300'}`}
-            >
-              {type === 'register' ? 'Register Student' : type === 'find' ? 'Find Student' : 'Book Key'}
-            </button>
-          ))}
+        <div className="mt-8 p-6 bg-gray-800 rounded-lg shadow-md w-1/2">
+          <div className="flex justify-center space-x-4 mb-6">
+            {['register', 'find', 'key'].map(type => (
+              <button
+                key={type}
+                onClick={() => setActiveForm(type)}
+                className={`py-2 px-4 rounded-lg font-semibold transition duration-200 ${activeForm === type ? 'bg-blue-600 text-cyan-500' : 'bg-gray-700 text-gray-300'}`}
+              >
+                {type === 'register' ? 'Register Student' : type === 'find' ? 'Find Student' : 'Add Key'}
+              </button>
+            ))}
+          </div>
+
+          {activeForm === 'register' && (
+            <form className="space-y-4 bg-gray-900 rounded-xl shadow-lg" onSubmit={async (e) => {
+              e.preventDefault();
+              try {
+                console.log({ studentName, studentId, rfId });
+                const response = await fetch(registerUri, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({ studentName, studentId, rfId })
+                });
+                const data = await response.json();
+                setRegisterMessage(data.message);
+                setStudentName('');
+                setStudentId('');
+                setRfId('');
+              } catch (error) {
+                setRegisterMessage(error.message);
+              }
+            }}>
+              <h2 className="text-xl pt-2 font-semibold text-cyan-500 text-center ">Register Student</h2>
+              <div className="space-y-2 m-2">
+                <input
+                  type="text"
+                  placeholder="Student Name"
+                  className="w-full px-4 py-2 rounded-lg border border-gray-700 bg-gray-800 text-cyan-500 focus:ring-2 focus:ring-blue-500"
+                  value={studentName}
+                  onChange={(e) => setStudentName(e.target.value)}
+                />
+                <input
+                  type="text"
+                  placeholder="Student ID"
+                  className="w-full px-4 py-2 rounded-lg border border-gray-700 bg-gray-800 text-cyan-500 focus:ring-2 focus:ring-blue-500"
+                  value={studentId}
+                  onChange={(e) => setStudentId(e.target.value)}
+                />
+                <input
+                  type="text"
+                  placeholder="RFID"
+                  className="w-full px-4 py-2 rounded-lg border border-gray-700 bg-gray-800 text-cyan-500 focus:ring-2 focus:ring-blue-500"
+                  value={rfId}
+                  onChange={(e) => setRfId(e.target.value)}
+                />
+              </div>
+              <button className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-cyan-500 font-semibold rounded-lg transition duration-300">
+                Register Student
+              </button>
+              <p>{registerMessage}</p>
+            </form>
+
+          )}
+
+          {activeForm === 'find' && (
+            <form className="space-y-4 bg-gray-900 rounded-xl shadow-lg" onSubmit={async (e) => {
+              e.preventDefault();
+              
+              const findUri = `https://locker-backend-swart.vercel.app/api/student/info/${studentId}`; // Include studentId in URL
+              console.log({ studentId });
+              console.log(findUri);
+          
+              try {
+                  const response = await fetch(findUri, {
+                      method: 'GET',  // GET request should not have a body
+                      headers: {
+                          'Content-Type': 'application/json'
+                      }
+                  });
+          
+                  if (!response.ok) {
+                      throw new Error("Student not found");
+                  }
+          
+                  const data = await response.json();
+                  setStudentData(data);
+              } catch (error) {
+                  setMessage(error.message);
+              }
+          }}
+          >
+              <h2 className="text-xl pt-2 font-semibold text-cyan-500 text-center">Find Student</h2>
+              <div className="space-y-2 m-2">
+                <input
+                  type="text"
+                  placeholder="Student ID"
+                  className="w-full px-4 py-2 rounded-lg border border-gray-700 bg-gray-800 text-cyan-500 focus:ring-2 focus:ring-blue-500"
+                  value={studentId}
+                  onChange={(e) => setStudentId(e.target.value)}
+                />
+              </div>
+              <button className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-cyan-500 font-semibold rounded-lg transition duration-300">
+                Find Student
+              </button>
+            </form>
+          )}
+
+          {activeForm === 'key' && (
+            <form className="space-y-4 bg-gray-900 rounded-xl shadow-lg" onSubmit={async (e) => {
+              e.preventDefault();
+              try {
+                  const response = await fetch(addKeyUri, {
+                      method: 'POST',
+                      headers: {
+                          'Content-Type': 'application/json'
+                      },
+                      body: JSON.stringify({ keyId: keyNumber })  // Fix: Use "keyId" instead of "keyNumber"
+                  });
+          
+                  const data = await response.json();
+          
+                  if (!response.ok) {
+                      throw new Error(data.message || "Failed to add key");
+                  }
+          
+                  setRegisterMessage(data.message);  // Fix: Show success message
+                  setKeyNumber('');
+              } catch (error) {
+                  setRegisterMessage(error.message);
+              }
+          }}
+          >
+              <h2 className="text-xl pt-2 font-semibold text-cyan-500 text-center">Add Key</h2>
+              <div className="space-y-2 m-2">
+                <input
+                  type="text"
+                  placeholder="Key Number"
+                  className="w-full px-4 py-2 rounded-lg border border-gray-700 bg-gray-800 text-cyan-500 focus:ring-2 focus:ring-blue-500"
+                  value={keyNumber}
+                  onChange={(e) => setKeyNumber(e.target.value)}
+                />
+              </div>
+              <button className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-cyan-500 font-semibold rounded-lg transition duration-300">
+                Add Key
+              </button>
+            </form>
+          )}
+
+
         </div>
-
-        {activeForm === 'register' && (
-         <form className="space-y-4 bg-gray-900 rounded-xl shadow-lg">
-         <h2 className="text-xl pt-2 font-semibold text-cyan-500 text-center">Register Student</h2>
-         <div className="space-y-2 m-2">
-           <input 
-             type="text" 
-             placeholder="Student Name" 
-             className="w-full px-4 py-2 rounded-lg border border-gray-700 bg-gray-800 text-cyan-500 focus:ring-2 focus:ring-blue-500" 
-             value={studentName} 
-             onChange={(e) => setStudentName(e.target.value)} 
-           />
-           <input 
-             type="text" 
-             placeholder="Student ID" 
-             className="w-full px-4 py-2 rounded-lg border border-gray-700 bg-gray-800 text-cyan-500 focus:ring-2 focus:ring-blue-500" 
-             value={studentId} 
-             onChange={(e) => setStudentId(e.target.value)} 
-           />
-           <input 
-             type="text" 
-             placeholder="RFID" 
-             className="w-full px-4 py-2 rounded-lg border border-gray-700 bg-gray-800 text-cyan-500 focus:ring-2 focus:ring-blue-500" 
-             value={rfId} 
-             onChange={(e) => setRfId(e.target.value)} 
-           />
-         </div>
-         <button className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-cyan-500 font-semibold rounded-lg transition duration-300">
-           Register Student
-         </button>
-       </form>
-        )}
-      </div>
-      <div className='w-1/2 mt-8'><TerminalLog logs={logs} /></div>
+        <div className='w-1/2 mt-8'><TerminalLog logs={logs} /></div>
       </div>
 
-      
+<KeyManagement/>
     </div>
   );
 }
