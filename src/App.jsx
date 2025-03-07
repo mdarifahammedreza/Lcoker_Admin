@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 import KeyManagement from './handle';
-const base_uri = "https://locker-backend-swart.vercel.app/";
+const base_uri = "https://locker-silk.vercel.app/";
 
 // Use the base URL to build complete endpoint URLs
 const uri = `${base_uri}api/student/stack`;
@@ -49,7 +49,7 @@ function App() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('https://locker-backend-swart.vercel.app/api/student/stack');
+        const response = await fetch(`${base_uri}api/student/stack`);
         if (!response.ok) throw new Error('Network response was not ok');
         const data = await response.json();
         setData(data);
@@ -155,7 +155,7 @@ function App() {
             <form className="space-y-4 bg-gray-900 rounded-xl shadow-lg" onSubmit={async (e) => {
               e.preventDefault();
               
-              const findUri = `https://locker-backend-swart.vercel.app/api/student/info/${studentId}`; // Include studentId in URL
+              const findUri = `${base_uri}api/student/info/${studentId}`; // Include studentId in URL
               console.log({ studentId });
               console.log(findUri);
           

@@ -5,7 +5,7 @@ const KeyManagement = () => {
   const [keyNumber, setKeyNumber] = useState("");
   const [message, setMessage] = useState("");
   const [isTakingKey, setIsTakingKey] = useState(true); // Toggle between take and return key forms
-
+const base_uri= "https://locker-silk.vercel.app/"
   const handleTakeKey = async () => {
     if (!rfid) {
       setMessage("RFID is required");
@@ -13,7 +13,7 @@ const KeyManagement = () => {
     }
 
     try {
-      const response = await fetch("https://locker-backend-swart.vercel.app/api/key/request", {
+      const response = await fetch(`${base_uri}api/key/request`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ rfid })
@@ -34,7 +34,7 @@ const KeyManagement = () => {
     }
 
     try {
-      const response = await fetch("https://locker-backend-swart.vercel.app/api/key/return", {
+      const response = await fetch(`${base_uri}api/key/return`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ rfid, keyNumber })
