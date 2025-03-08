@@ -64,10 +64,10 @@ function App() {
 const handleUpdate = async (updatedData) => {
   try {
       // Log the updated student data
-      console.log("Updated student data:", updatedData);
+      console.log("Updated student data:", updatedData.studentId, updatedData);
 
       // Send PUT request to the API
-      const response = await fetch(`${base_uri}api/student/update/${updatedData._id}`, {
+      const response = await fetch(`${base_uri}api/student/update/${updatedData.studentId}`, {
           method: 'PUT',
           headers: {
               'Content-Type': 'application/json',
@@ -360,7 +360,7 @@ export  function StudentTable({ data, onDelete, onUpdate }) {
 
   const handleEdit = (student) => {
       setFormData(student);
-      console.log("Edit student data:", student);
+      console.log("Edit student data:", student._id);
       setIsEditing(true);
   };
 
