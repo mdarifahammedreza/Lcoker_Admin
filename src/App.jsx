@@ -40,7 +40,7 @@ function App() {
         console.log("Delete student with ID:", id);
 
         // Send DELETE request to the API
-        const response = await fetch(`${base_uri}/api/student/delete/${id}`, {
+        const response = await fetch(`${base_uri}api/student/delete/${id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -67,7 +67,7 @@ const handleUpdate = async (updatedData) => {
       console.log("Updated student data:", updatedData);
 
       // Send PUT request to the API
-      const response = await fetch(`/api/student/update/${updatedData.id}`, {
+      const response = await fetch(`${base_uri}api/student/update/${updatedData.id}`, {
           method: 'PUT',
           headers: {
               'Content-Type': 'application/json',
@@ -342,7 +342,8 @@ export  function StudentTable({ data, onDelete, onUpdate }) {
   const handleSubmit = (e) => {
       e.preventDefault();
       if (isEditing) {
-          onUpdate(formData); // Pass the updated form data to the onUpdate handler
+          onUpdate(formData);
+          console.log(formData) // Pass the updated form data to the onUpdate handler
       } else {
           console.log("Submit new student data:", formData); // Handle new data submission
       }
@@ -359,6 +360,7 @@ export  function StudentTable({ data, onDelete, onUpdate }) {
 
   const handleEdit = (student) => {
       setFormData(student);
+      console.log("Edit student data:", student);
       setIsEditing(true);
   };
 
@@ -455,7 +457,8 @@ export  function StudentTable({ data, onDelete, onUpdate }) {
                                       Edit
                                   </button>
                                   <button
-                                      onClick={() => onDelete(value.id)}
+                                      onClick={() => {onDelete(value.studentId) ;
+                                                      console.log(value.studentId)}}
                                       className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded"
                                   >
                                       Delete
