@@ -67,7 +67,7 @@ const handleUpdate = async (updatedData) => {
       console.log("Updated student data:", updatedData);
 
       // Send PUT request to the API
-      const response = await fetch(`${base_uri}api/student/update/${updatedData.id}`, {
+      const response = await fetch(`${base_uri}api/student/update/${updatedData._id}`, {
           method: 'PUT',
           headers: {
               'Content-Type': 'application/json',
