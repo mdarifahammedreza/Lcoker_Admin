@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 import KeyManagement from './handle';
+import KeyStatus from './keys';
+import TerminalLog from './TerminalLog';
 
 const base_uri = "https://locker-silk.vercel.app/";
 
@@ -9,7 +11,7 @@ const uri = `${base_uri}api/student/stack`;
 const registerUri = `${base_uri}api/student/register`;
 const findUri = `${base_uri}api/student/info`;
 const addKeyUri = `${base_uri}api/key/add`;
-const logUri = `${base_uri}api/student/logs`;
+// const logUri = `${base_uri}api/student/logs`;
 
 // Alert Component
 const Alert = ({ message, type }) => {
@@ -34,18 +36,7 @@ const KeyInfoBox = ({ title, count, colSpan = 1 }) => (
 );
 
 // TerminalLog Component
-const TerminalLog = ({ logs }) => (
-  <div className='w-full h-full'>
-    <div className="bg-black text-green-400 p-4 rounded-lg font-mono h-64 overflow-auto border border-gray-700 shadow-lg relative">
-      <h2 className="text-xl bg-gray-950 px-1 py-1 font-semibold text-cyan-500 sticky top-0 left-0">Terminal- Vendor Log</h2>
-      <div className="h-full w-full p-2">
-        {logs.length > 0 ? logs.map((log, index) => (
-          <p key={index} className="whitespace-pre">{`> ${log.timestamp} - ${log.message}`}</p>
-        )) : <p>:-- No logs available...</p>}
-      </div>
-    </div>
-  </div>
-);
+
 
 function App() {
   const [rfId, setRfId] = useState('');
@@ -60,7 +51,6 @@ function App() {
   const [activeForm, setActiveForm] = useState('register');
   const [studentData, setStudentData] = useState(null);
   const [keyNumber, setKeyNumber] = useState('');
-  const [logs, setLogs] = useState([]);
   const [alert, setAlert] = useState({ message: '', type: '' });
 
   // Show Alert Function
@@ -76,7 +66,8 @@ function App() {
         const response = await fetch(`${base_uri}api/student/stack`);
         if (!response.ok) throw new Error('Network response was not ok');
         const data = await response.json();
-        setData(data);
+        setData(data.data);
+        console.log(data.data);
       } catch (error) {
         setError(error.message);
       } finally {
@@ -215,10 +206,10 @@ function App() {
   if (error) return <div className="text-red-400 text-center mt-10">Error: {error}</div>;
 
   // Key and Student Counts
-  const availableKeys = keys.filter(key => key.status === 'available').length;
-  const takenKeys = keys.filter(key => key.status === 'assigned').length;
-  const bannedStudents = data.filter(student => student.studentBannedStatus === "Yes").length;
-  const totalWarnings = data.filter(student => student.studentWarningStatus === "Yes").length;
+  const availableKeys = keys?.filter((key) => key?.status === "available")?.length || 0;
+  const takenKeys = keys?.filter((key) => key?.status === "assigned")?.length || 0;
+  const bannedStudents = Array.isArray(data) ? data.filter((student) => student?.studentBannedStatus === "Yes").length : 0;
+  const totalWarnings = Array.isArray(data) ? data.filter((student) => student?.studentWarningStatus === "Yes").length : 0;
 
   return (
     <div className="bg-gray-900 min-h-screen p-8 text-gray-100">
@@ -280,7 +271,7 @@ function App() {
                   onChange={(e) => setRfId(e.target.value)}
                 />
               </div>
-              <button className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-cyan-500 font-semibold rounded-lg transition duration-300">
+              <button className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition duration-300">
                 Register Student
               </button>
             </form>
@@ -325,7 +316,7 @@ function App() {
 
         {/* Terminal Log */}
         <div className='w-1/2 mt-8'>
-          <TerminalLog logs={logs} />
+          <TerminalLog/>
         </div>
       </div>
 
@@ -351,6 +342,8 @@ function App() {
           )}
         </div>
       </div>
+      <KeyStatus />
+    
     </div>
   );
 }
@@ -475,7 +468,7 @@ export function StudentTable({ data, onDelete, onUpdate }) {
           </thead>
           <tbody>
             {data.map((value) => (
-              <tr key={value.id} className="border-b border-gray-700">
+              <tr key={value.studentId} className="border-b border-gray-700">
                 <td className="py-2 px-4">{value.studentId}</td>
                 <td className="py-2 px-4">{value.studentName}</td>
                 <td className="py-2 px-4">{value.rfId}</td>
@@ -501,6 +494,12 @@ export function StudentTable({ data, onDelete, onUpdate }) {
           </tbody>
         </table>
       </div>
+      <div>
+
+
+     
+      </div>
+      
     </div>
   );
 }
