@@ -121,8 +121,15 @@ const handleUpdate = async (updatedData) => {
 
   const availableKeys = data.filter(student => student.keyStatus === 'Available').length;
   const takenKeys = data.filter(student => student.keyStatus === 'Taken').length;
-  const bannedStudents = data.filter(student => student.studentBannedStatus).length;
-  const totalWarnings = data.reduce((sum, student) => sum + student.studentWarningStatus, 0);
+  // Count students with banned status "Yes"
+const bannedStudents = data.filter(student => student.studentBannedStatus === "Yes").length;
+
+// Count students with warning status "Yes"
+const totalWarnings = data.filter(student => student.studentWarningStatus === "Yes").length;
+
+// console.log("Banned Students:", bannedStudents);
+// console.log("Total Warnings:", totalWarnings);
+
 
   return (
     <div className="bg-gray-900 min-h-screen p-8 text-gray-100">
