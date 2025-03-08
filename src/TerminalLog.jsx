@@ -2,45 +2,45 @@ import React, { useEffect, useState } from "react";
 
 const TerminalLog = () => {
   const [logs, setLogs] = useState([]);
+  const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    let eventSource;
+    // Create a WebSocket connection
+    const ws = new WebSocket("wss://locker-silk.vercel.app"); // Replace with your WebSocket server URL
 
-    const connectToSSE = () => {
-      eventSource = new EventSource("https://locker-silk.vercel.app/api/logs");
-
-      eventSource.onopen = () => {
-        console.log("SSE Connection opened");
-      };
-
-      eventSource.onmessage = (event) => {
-        try {
-          const logMessage = JSON.parse(event.data);
-          setLogs((prevLogs) => [...prevLogs, logMessage]);
-        } catch (error) {
-          console.error("Error parsing log message:", error);
-        }
-      };
-
-      eventSource.onerror = (error) => {
-        console.error("SSE Error:", error);
-        eventSource.close(); // Close the connection
-
-        // Attempt to reconnect after 3 seconds
-        setTimeout(() => {
-          console.log("Reconnecting to SSE...");
-          connectToSSE();
-        }, 3000);
-      };
+    ws.onopen = () => {
+      console.log("WebSocket connection opened");
     };
 
-    // Initial connection
-    connectToSSE();
+    ws.onmessage = (event) => {
+      try {
+        const logMessage = JSON.parse(event.data);
+        setLogs((prevLogs) => [...prevLogs, logMessage]);
+      } catch (error) {
+        console.error("Error parsing log message:", error);
+      }
+    };
+
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+
+    ws.onclose = () => {
+      console.log("WebSocket connection closed");
+      // Attempt to reconnect after 3 seconds
+      setTimeout(() => {
+        console.log("Reconnecting to WebSocket...");
+        setSocket(new WebSocket("wss://locker-silk.vercel.app")); // Reconnect
+      }, 3000);
+    };
+
+    // Save the WebSocket instance to state
+    setSocket(ws);
 
     // Clean up on component unmount
     return () => {
-      if (eventSource) {
-        eventSource.close();
+      if (ws) {
+        ws.close();
       }
     };
   }, []);
