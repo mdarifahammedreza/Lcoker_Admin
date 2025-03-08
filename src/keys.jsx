@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 const KeyStatus = () => {
-  const base_uri = 'https://locker-silk.vercel.app/api/';
+  const base_uri = 'https://locker-8w4r.onrender.com/api/';
   const [keys, setKeys] = useState([]);
   const [selectedKey, setSelectedKey] = useState(null);
   const [newStatus, setNewStatus] = useState('');
@@ -16,7 +16,7 @@ const KeyStatus = () => {
       try {
         const response = await fetch(`${base_uri}key/all`);
         const text = await response.text();
-
+console.log(text)
         // Check if the response is JSON
         try {
           const data = JSON.parse(text);

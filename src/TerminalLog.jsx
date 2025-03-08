@@ -6,7 +6,7 @@ const TerminalLog = () => {
 
   useEffect(() => {
     // Create a WebSocket connection
-    const ws = new WebSocket("wss://locker-silk.vercel.app"); // Replace with your WebSocket server URL
+    const ws = new WebSocket("wss://locker-8w4r.onrender.com"); // Replace with your WebSocket server URL
 
     ws.onopen = () => {
       console.log("WebSocket connection opened");
@@ -30,7 +30,7 @@ const TerminalLog = () => {
       // Attempt to reconnect after 3 seconds
       setTimeout(() => {
         console.log("Reconnecting to WebSocket...");
-        setSocket(new WebSocket("wss://locker-silk.vercel.app")); // Reconnect
+        setSocket(new WebSocket("wss://locker-8w4r.onrender.com")); // Reconnect
       }, 3000);
     };
 

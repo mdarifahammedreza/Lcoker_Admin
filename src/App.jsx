@@ -4,7 +4,7 @@ import KeyManagement from './handle';
 import KeyStatus from './keys';
 import TerminalLog from './TerminalLog';
 
-const base_uri = "https://locker-silk.vercel.app/";
+const base_uri = "https://locker-8w4r.onrender.com/";
 
 // Use the base URL to build complete endpoint URLs
 const uri = `${base_uri}api/student/stack`;
