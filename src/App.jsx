@@ -91,6 +91,7 @@ const handleUpdate = async (updatedData) => {
   const [studentId, setStudentId] = useState('');
   const [studentName, setStudentName] = useState('');
   const [message, setMessage] = useState('');
+  const [keys, setKeys] = useState([]);
   const [registerMessage, setRegisterMessage] = useState('');
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -113,14 +114,27 @@ const handleUpdate = async (updatedData) => {
         setLoading(false);
       }
     };
+    const fetchkey = async () => {
+      try {
+        const response = await fetch(`${base_uri}api/key/all`);
+        if (!response.ok) throw new Error('Network response was not ok');
+        const key = await response.json();
+        console.log(key);
+        setKeys(data);
+      } catch (error) {
+        // setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchData();
   }, []);
 
   if (loading) return <div className="text-gray-100 text-center mt-10">Loading...</div>;
   if (error) return <div className="text-red-400 text-center mt-10">Error: {error}</div>;
 
-  const availableKeys = data.filter(student => student.keyStatus === 'Available').length;
-  const takenKeys = data.filter(student => student.keyStatus === 'Taken').length;
+  const availableKeys = keys.filter(key => key.status === 'available').length;
+  const takenKeys = keys.filter(key => key.status === 'taken').length;
   // Count students with banned status "Yes"
 const bannedStudents = data.filter(student => student.studentBannedStatus === "Yes").length;
 
