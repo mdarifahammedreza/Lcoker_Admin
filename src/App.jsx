@@ -216,7 +216,7 @@ function App() {
 
   // Key and Student Counts
   const availableKeys = keys.filter(key => key.status === 'available').length;
-  const takenKeys = keys.filter(key => key.status === 'taken').length;
+  const takenKeys = keys.filter(key => key.status === 'assigned').length;
   const bannedStudents = data.filter(student => student.studentBannedStatus === "Yes").length;
   const totalWarnings = data.filter(student => student.studentWarningStatus === "Yes").length;
 
