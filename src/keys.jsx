@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 const KeyStatus = () => {
-  const base_uri = 'https://locker-8w4r.onrender.com/api/';
+  const base_uri = 'https://locker-silk.vercel.app/api/';
   const [keys, setKeys] = useState([]);
   const [selectedKey, setSelectedKey] = useState(null);
   const [newStatus, setNewStatus] = useState('');

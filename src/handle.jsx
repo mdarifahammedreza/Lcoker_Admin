@@ -5,7 +5,7 @@ const KeyManagement = () => {
   const [keyNumber, setKeyNumber] = useState("");
   const [message, setMessage] = useState("");
   const [isTakingKey, setIsTakingKey] = useState(true); // Toggle between take and return key forms
-const base_uri= "https://locker-8w4r.onrender.com/"
+const base_uri= "https://locker-silk.vercel.app/"
   const handleTakeKey = async () => {
     if (!rfid) {
       setMessage("RFID is required");

@@ -2,9 +2,8 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import KeyManagement from './handle';
 import KeyStatus from './keys';
-import TerminalLog from './TerminalLog';
 
-const base_uri = "https://locker-8w4r.onrender.com/";
+const base_uri = "https://locker-silk.vercel.app/";
 
 // Use the base URL to build complete endpoint URLs
 const uri = `${base_uri}api/student/stack`;
@@ -316,7 +315,7 @@ function App() {
 
         {/* Terminal Log */}
         <div className='w-1/2 mt-8'>
-          <TerminalLog/>
+          {/* <TerminalLog/> */}
         </div>
       </div>
 
